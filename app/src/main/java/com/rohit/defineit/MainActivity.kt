@@ -3,26 +3,17 @@ package com.rohit.defineit
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
-import com.android.volley.Request
 import com.android.volley.Request.Method.GET
-import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.JsonObjectRequest
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_one_meaning.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
     private var isword : String? = null
     private var url : String? = "https://api.dictionaryapi.dev/api/v2/entries/en/"
     private val wrongWord : String = "No Definitions Found"
-//    val WORD : String = "word"
-//    val SPEECH : String = "speech"
-//    val MEANING : String = "meaning"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -31,7 +22,7 @@ class MainActivity : AppCompatActivity() {
             // Do some work here
             isword = isWord.text.toString()
             if(isword!=null){
-                url = url + isword
+                url += isword
                 getMeaning()
                 url = "https://api.dictionaryapi.dev/api/v2/entries/en/"
             }
@@ -43,10 +34,10 @@ class MainActivity : AppCompatActivity() {
 
     }
     private fun getMeaning() {
-        val JsonArrayRequest = JsonArrayRequest(Request.Method.GET,
+        val jsonArrayRequest = JsonArrayRequest(GET,
             url,
             null,
-            Response.Listener { response ->
+            { response ->
                 var obj: JSONObject? = response.getJSONObject(0)
                 val jsonArray: JSONArray? = obj?.getJSONArray("meanings")
                 val obj2: JSONObject? = jsonArray?.getJSONObject(0)
@@ -64,10 +55,10 @@ class MainActivity : AppCompatActivity() {
 
 
             },
-            Response.ErrorListener {
+            {
                 Toast.makeText(this, "Something is Wrong !", Toast.LENGTH_SHORT).show()
             }
         )
-        MySingleTon.getInstance(this)?.addToRequestQue(JsonArrayRequest)
+        MySingleTon.getInstance(this)?.addToRequestQue(jsonArrayRequest)
     }
 }
